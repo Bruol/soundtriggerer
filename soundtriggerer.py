@@ -37,6 +37,8 @@ color = pygame.Color(0, 128, 255)
 clock = pygame.time.Clock()
 
 
+myfont = pygame.font.SysFont("Noto Sans",11,True)
+
 
 keys = {'1':(0,0),'2':(1,0),'3':(2,0),'4':(3,0),'5':(4,0),'6':(5,0),'7':(6,0),'8':(7,0),'9':(8,0),'0':(9,0),'ß':(10,0),'´':(11,0),
         'q':(0,1),'w':(1,1),'e':(2,1),'r':(3,1),'t':(4,1),'z':(5,1),'u':(6,1),'i':(7,1),'o':(8,1),'p':(9,1),'ü':(10,1),'+':(11,1),
@@ -68,18 +70,41 @@ class Player(pygame.sprite.Sprite):
 
 player = Player()
 
+dt_prev = 0
 
-
+q = 0
+q_old = 0
 
 #main loop
 while not done:
         dt = clock.tick(fps) / 1000
+
+        dt_prev += dt
+        
         #make window black
         window.fill((0,0,0))
 
         #show background image
-        window.blit(image, (0, 0))
 
+        window.blit(image, (0, 0))
+        
+        #write text
+       
+        phone_label = myfont.render("phone",1,(255,255,255))
+
+        window.blit(phone_label, (5 + x_margin + keys['q'][0]*(key_dim + x_gap),30+y_margin + keys['q'][1]*(key_dim + y_gap)))
+
+        door_bell_label = myfont.render("door",1,(255,255,255))
+
+        window.blit(door_bell_label, (5 + x_margin + keys['w'][0]*(key_dim + x_gap),30+y_margin + keys['w'][1]*(key_dim + y_gap)))
+
+        break_bell_label = myfont.render("break",1,(255,255,255))
+
+        window.blit(break_bell_label, (5 + x_margin + keys['e'][0]*(key_dim + x_gap),30+y_margin + keys['e'][1]*(key_dim + y_gap)))
+
+        announcement_bell_label = myfont.render("ann...",1,(255,255,255))
+
+        window.blit(announcement_bell_label, (5 + x_margin + keys['r'][0]*(key_dim + x_gap),30+y_margin + keys['r'][1]*(key_dim + y_gap)))
 
 
         #change color variable 
@@ -87,36 +112,57 @@ while not done:
         else: player.color = pygame.Color(255, 100, 0,0)
 
 
+
+
         #check for event
+       
+
+
         for event in pygame.event.get():
                 #check for keypresses
                 if event.type == pygame.QUIT:
-                        done = True
+                       done = True
+                
                 if event.type == pygame.KEYDOWN:
-                        
-                        #move squares
+                     
                         if event.key == pygame.K_SPACE:
-                                is_muted = not is_muted
+                               is_muted = not is_muted
                         if event.key == pygame.K_q:
                                 player.key = "q"
-                                #play sfx
+
                                 sfx.load('files/phone_ring.ogg')
                                 sfx.play(0)
+                                
                         if event.key == pygame.K_w:
                                 player.key = "w"
-                        #if event.key == pygame.K_e:
+
+                                sfx.load('files/door_bell.ogg')
+                                sfx.play(0)
+                        if event.key == pygame.K_e:
+                                player.key = "e"
+
+                                sfx.load('files/break_bell.ogg')
+                                sfx.play(0)
                               
-                        #if event.key == pygame.K_r:
+                        if event.key == pygame.K_r:     
+                                player.key = "r"
+
+                                sfx.load('files/announcement_bell.ogg')
+                                sfx.play(0)
+
         if sfx.get_busy() == 0:
                 player.key =  ""     
                                   
         if is_muted:
                 sfx.fadeout(1000)
                 time.sleep(1.5)
-                sfx.set_volume(0)      
+                sfx.set_volume(0)   
+                if sfx.get_busy() == 1:
+                        sfx.stop()   
         elif not is_muted :
                 sfx.set_volume(1)
-
+        
+       
 
         player.update()
 
@@ -126,7 +172,6 @@ while not done:
 
         #set framerate to 60
         clock.tick(fps)
-
 
         #update view
         pygame.display.flip()
