@@ -64,20 +64,18 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
                                     
         self.image = pygame.Surface((49,49))
-        self.image.set_alpha(128)
+        self.image.set_alpha(0)
         self.image.fill(color)
         self.rect = self.image.get_rect()  # Get rect of some size as 'image'.
         self.key = ''
 
 
     def update(self):
-        if self.key:
-                self.rect.move_ip((x_margin + keys[self.key][0]*(key_dim*x_gap),y_margin + keys[self.key][1]*(key_dim*y_gap)))
-                print(keys[self.key])
-
-
-
-
+        if self.key :
+                self.image.set_alpha(128)
+                self.rect = ((x_margin + keys[self.key][0]*(key_dim+x_gap),y_margin + keys[self.key][1]*(key_dim+y_gap)),(key_dim,key_dim))
+        else:
+                self.image.set_alpha(0)
 player = Player()
 
 
@@ -116,6 +114,11 @@ while not done:
                         #if event.key == pygame.K_e:
                               
                         #if event.key == pygame.K_r:
+                elif event.type == pygame.KEYUP:
+                        if event.key == pygame.K_q:
+                                player.key = ""
+                        if event.key == pygame.K_w:
+                                player.key = ""
                                   
                         
 
