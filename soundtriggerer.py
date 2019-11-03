@@ -5,45 +5,31 @@ import time
 pygame.init()
 pygame.mixer.init(allowedchanges=0)
 
+sfx = pygame.mixer.music
+
 
 #define fps
 fps = 60
-
-#load sfx
-phone = pygame.mixer.Sound('files/audio.ogg')
-
-#play sfx
-#phone.play()
-
-
-
 #load background image
 image = pygame.image.load("files/keyboard.png")
-
-
 #define window width to background image dimensions
 width=image.get_rect()[2]
 height=image.get_rect()[3]
-
 # define offset of first key from border
 x_margin = 5
 y_margin = 5
-
 #define gaps between keys
 x_gap = 3
 y_gap = 5
-
 #define size of square keys
 key_dim = 49
-
 #define window
 window = pygame.display.set_mode((width, height))
-
 #define that we are not done jet
 done = False
 
 #Todo:rename
-is_blue = True
+is_muted = False
 
 color = pygame.Color(0, 128, 255)
 
@@ -62,20 +48,24 @@ keys = {'1':(0,0),'2':(1,0),'3':(2,0),'4':(3,0),'5':(4,0),'6':(5,0),'7':(6,0),'8
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-                                    
+        self.color = (color)                     
         self.image = pygame.Surface((49,49))
         self.image.set_alpha(0)
-        self.image.fill(color)
+        self.image.fill(self.color)
         self.rect = self.image.get_rect()  # Get rect of some size as 'image'.
         self.key = ''
 
 
     def update(self):
         if self.key :
+                self.image.fill(self.color)
                 self.image.set_alpha(128)
                 self.rect = ((x_margin + keys[self.key][0]*(key_dim+x_gap),y_margin + keys[self.key][1]*(key_dim+y_gap)),(key_dim,key_dim))
         else:
                 self.image.set_alpha(0)
+
+
+
 player = Player()
 
 
@@ -93,8 +83,8 @@ while not done:
 
 
         #change color variable 
-        if is_blue: color = pygame.Color(0, 128, 255,10)
-        else: color = pygame.Color(255, 100, 0,0)
+        if is_muted: player.color = pygame.Color(0, 128, 255,10)
+        else: player.color = pygame.Color(255, 100, 0,0)
 
 
         #check for event
@@ -106,21 +96,27 @@ while not done:
                         
                         #move squares
                         if event.key == pygame.K_SPACE:
-                                is_blue = not is_blue
+                                is_muted = not is_muted
                         if event.key == pygame.K_q:
                                 player.key = "q"
+                                #play sfx
+                                sfx.load('files/phone_ring.ogg')
+                                sfx.play(0)
                         if event.key == pygame.K_w:
                                 player.key = "w"
                         #if event.key == pygame.K_e:
                               
                         #if event.key == pygame.K_r:
-                elif event.type == pygame.KEYUP:
-                        if event.key == pygame.K_q:
-                                player.key = ""
-                        if event.key == pygame.K_w:
-                                player.key = ""
+        if sfx.get_busy() == 0:
+                player.key =  ""     
                                   
-                        
+        if is_muted:
+                sfx.fadeout(1000)
+                time.sleep(1.5)
+                sfx.set_volume(0)      
+        elif not is_muted :
+                sfx.set_volume(1)
+
 
         player.update()
 
