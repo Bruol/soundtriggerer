@@ -74,7 +74,7 @@ player = Player()
 
 dt_prev = 0
 
-sounds = {'phone':'q','door':'w','break':'e','durch_fr':'r','durch_sa':'t','inter...':'z','klass...':'u','somm...':'i'}
+sounds = {'q':'phone','w':'door','e':'break','r':'durch_fr','t':'durch_sa','z':'inter...','u':'klass...','i':'somm...'}
 #main loop
 while not done:
         dt = clock.tick(fps) / 1000
@@ -93,9 +93,9 @@ while not done:
 
 
         for element in sounds:
-                label = myfont.render(element,1,(255,255,255))
+                label = myfont.render(sounds[element],1,(255,255,255))
 
-                window.blit(label, (5 + x_margin + keys[sounds[element]][0]*(key_dim + x_gap),30+y_margin + keys[sounds[element]][1]*(key_dim + y_gap)))
+                window.blit(label, (5 + x_margin + keys[element][0]*(key_dim + x_gap),30+y_margin + keys[element][1]*(key_dim + y_gap)))
 
 
 
@@ -120,6 +120,8 @@ while not done:
                      
                         if event.key == pygame.K_SPACE:
                                is_muted = not is_muted
+                        
+                        
                         if event.key == pygame.K_q:
                                 player.key = "q"
 
