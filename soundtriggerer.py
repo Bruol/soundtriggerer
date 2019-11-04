@@ -9,6 +9,7 @@ pygame.mixer.init(allowedchanges=0)
 sfx = pygame.mixer.music
 
 
+
 #define fps
 fps = 60
 #load background image
@@ -25,7 +26,7 @@ y_gap = 5
 #define size of square keys
 key_dim = 49
 #define window
-window = pygame.display.set_mode((width, height))
+window = pygame.display.set_mode((width,height))
 #define that we are not done jet
 done = False
 
@@ -38,7 +39,7 @@ color = pygame.Color(0, 128, 255)
 clock = pygame.time.Clock()
 
 
-myfont = pygame.font.SysFont("Noto Sans",11,True)
+myfont = pygame.font.SysFont("Noto Sans",9,True)
 
 
 keys = {'1':(0,0),'2':(1,0),'3':(2,0),'4':(3,0),'5':(4,0),'6':(5,0),'7':(6,0),'8':(7,0),'9':(8,0),'0':(9,0),'ß':(10,0),'´':(11,0),
@@ -73,12 +74,11 @@ player = Player()
 
 dt_prev = 0
 
-q = 0
-q_old = 0
-
+sounds = {'phone':'q','door':'w','break':'e','durch_fr':'r','durch_sa':'t','inter...':'z','klass...':'u','somm...':'i'}
 #main loop
 while not done:
         dt = clock.tick(fps) / 1000
+        
 
         dt_prev += dt
         
@@ -90,22 +90,14 @@ while not done:
         window.blit(image, (0, 0))
         
         #write text
-       
-        phone_label = myfont.render("phone",1,(255,255,255))
 
-        window.blit(phone_label, (5 + x_margin + keys['q'][0]*(key_dim + x_gap),30+y_margin + keys['q'][1]*(key_dim + y_gap)))
 
-        door_bell_label = myfont.render("door",1,(255,255,255))
+        for element in sounds:
+                label = myfont.render(element,1,(255,255,255))
 
-        window.blit(door_bell_label, (5 + x_margin + keys['w'][0]*(key_dim + x_gap),30+y_margin + keys['w'][1]*(key_dim + y_gap)))
+                window.blit(label, (5 + x_margin + keys[sounds[element]][0]*(key_dim + x_gap),30+y_margin + keys[sounds[element]][1]*(key_dim + y_gap)))
 
-        break_bell_label = myfont.render("break",1,(255,255,255))
 
-        window.blit(break_bell_label, (5 + x_margin + keys['e'][0]*(key_dim + x_gap),30+y_margin + keys['e'][1]*(key_dim + y_gap)))
-
-        announcement_bell_label = myfont.render("ann...",1,(255,255,255))
-
-        window.blit(announcement_bell_label, (5 + x_margin + keys['r'][0]*(key_dim + x_gap),30+y_margin + keys['r'][1]*(key_dim + y_gap)))
 
 
         #change color variable 
@@ -148,15 +140,50 @@ while not done:
                         if event.key == pygame.K_r:     
                                 player.key = "r"
 
-                                sfx.load('files/announcement_bell.ogg')
+                                sfx.load('files/durchsage_freitag.ogg')
                                 sfx.play(0)
+                        if event.key == pygame.K_t:     
+                                player.key = "t"
+
+                                sfx.load('files/durchsage_samstag.ogg')
+                                sfx.play(0)
+                        if event.key == pygame.K_z:     
+                                player.key = "z"
+
+                                sfx.load('files/intermezzo_sommernachtstraum.ogg')
+                                sfx.play(0)  
+                        if event.key == pygame.K_u:     
+                                player.key = "u"
+
+                                sfx.load('files/klassenzimmerloops.ogg')
+                                sfx.play(0)
+                        if event.key == pygame.K_i:     
+                                player.key = "i"
+
+                                sfx.load('files/sommernachtstraum.ogg')
+                                sfx.play(0)
+                        # if event.key == pygame.K_o:     
+                        #         player.key = "r"
+
+                        #         sfx.load('files/durchsage_freitag.ogg')
+                        #         sfx.play(0)
+                        # if event.key == pygame.K_p:     
+                        #         player.key = "r"
+
+                        #         sfx.load('files/durchsage_freitag.ogg')
+                        #         sfx.play(0)     
+                        if event.key == pygame.K_ESCAPE:     
+                                done = True
 
         if sfx.get_busy() == 0:
-                player.key =  ""     
+                if not is_muted:
+                        player.key =  "" 
+                if is_muted:
+                        time.sleep(1)
+                        player.key = ""   
                                   
         if is_muted:
-                sfx.fadeout(1000)
-                time.sleep(1.5)
+                sfx.fadeout(500)
                 sfx.set_volume(0)   
                 if sfx.get_busy() == 1:
                         sfx.stop()   
