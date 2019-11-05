@@ -188,13 +188,10 @@ while not done:
                         time.sleep(1)
                         player.key = ""   
                                   
-        if is_muted:
-                sfx.fadeout(500)
-                sfx.set_volume(0)   
-                if sfx.get_busy() == 1:
-                        sfx.stop()   
+        if is_muted and sfx.get_busy() == 1:
+                sfx.pause()
         elif not is_muted :
-                sfx.set_volume(1)
+                sfx.unpause()
         
        
 
