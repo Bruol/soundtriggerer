@@ -94,7 +94,7 @@ while not done:
 
         window.blit(pygame.transform.scale(image,(int(param*width),int(param*height))), (0, 0))
         
-        print(param)
+        
         #write text
         for element in sounds:
                 label = myfont.render(sounds[element],1,(255,255,255))
